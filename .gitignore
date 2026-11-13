@@ -1,0 +1,19 @@
+# macOS & Python
+.DS_Store
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# ML datasets & raw checkpoints (keep .gitkeep)
+ml/dataset/*
+!ml/dataset/.gitkeep
+ml/models/*.pt
+ml/models/*.pth
+
+# Terraform state & local secrets
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+.env

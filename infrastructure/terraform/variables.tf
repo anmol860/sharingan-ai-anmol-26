@@ -28,3 +28,8 @@ variable "dynamo_table_id" {
   default     = "sharingan-ai-anmol-26"
 }
 
+variable "prj_name" {
+  type        = string
+  description = "Prj name"
+  default     = "sharingan-ai"
+}

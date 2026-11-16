@@ -73,3 +73,8 @@ resource "aws_dynamodb_table" "shariangan_table" {
     enabled = true
   }
 }
+
+
+
+
+

@@ -1,13 +1,203 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SharinganAI</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
+    body {
+      min-height: 100vh;
+      background: #0a0a0b;
+      color: #f4f4f5;
+      font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      width: 100%;
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 26px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+
+    .brand-icon {
+      width: 24px;
+      height: 24px;
+    }
+
+    .brand-icon.spinning {
+      animation: spin 1.6s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .brand span {
+      color: #e04a4a;
+    }
+
+    .auth-link {
+      background: none;
+      border: none;
+      color: #8a8a93;
+      font: inherit;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: color 0.15s ease;
+    }
+
+    .auth-link:hover {
+      color: #f4f4f5;
+    }
+
+    main {
+      width: 100%;
+      max-width: 460px;
+      margin: 84px auto 0;
+      padding: 0 20px 60px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: clamp(1.85rem, 4vw, 2.35rem);
+      font-weight: 600;
+      letter-spacing: -0.025em;
+      margin-bottom: 32px;
+    }
+
+    .file-input {
+      display: none;
+    }
+
+    .btn-select {
+      width: 100%;
+      padding: 15px 20px;
+      border: 1px solid #242428;
+      border-radius: 10px;
+      background: #111113;
+      color: #d4d4d8;
+      font: inherit;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 14px;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+
+    .btn-select:hover {
+      border-color: #3a3a42;
+      background: #161619;
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 15px 20px;
+      border: none;
+      border-radius: 10px;
+      background: #e04a4a;
+      color: #ffffff;
+      font: inherit;
+      font-size: 0.96rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s ease, opacity 0.15s ease;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: #ea5656;
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    .status {
+      margin-top: 22px;
+      min-height: 28px;
+      font-size: 0.95rem;
+      color: #9a9aa4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .status.error {
+      color: #f87171;
+    }
+
+    .status.result {
+      color: #ffffff;
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    .spinner {
+      width: 15px;
+      height: 15px;
+      border: 2px solid #2b2b30;
+      border-top-color: #e04a4a;
+      border-radius: 50%;
+      animation: spin 0.75s linear infinite;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
 <body>
-    <button id="login-btn">Login</button>
-    <button id="logout-btn">Logout</button>
-    <p id="auth-status">Not logged in!</p>
-    <input type="file" id="file" accept="image/*" />
-    <button id="btn-upload">Upload</button>
-    <p id="status"></p>
-    <script src="index.js"></script>
-</body>
+  <header>
+    <div class="brand">
+      <svg id="brand-icon" class="brand-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <circle cx="50" cy="50" r="42" stroke="#e04a4a" stroke-width="6" />
+        <circle cx="50" cy="50" r="24" stroke="#e04a4a" stroke-width="3.5" opacity="0.65" />
+        <circle cx="50" cy="50" r="6" fill="#e04a4a" />
+        <circle cx="50" cy="26" r="5" fill="#e04a4a" />
+        <circle cx="71" cy="62" r="5" fill="#e04a4a" />
+        <circle cx="29" cy="62" r="5" fill="#e04a4a" />
+      </svg>
+      <div>Sharingan<span>AI</span></div>
+    </div>
 
+    <button id="login-btn" class="auth-link">Login</button>
+    <button id="logout-btn" class="auth-link hidden">Logout</button>
+  </header>
+
+  <main>
+    <h1>Identify Anime Characters</h1>
+
+    <input type="file" id="file" class="file-input" accept="image/*" />
+    <button id="select-btn" class="btn-select" type="button">Select Image</button>
+    <button id="btn-upload" class="btn-primary" type="button">Identify Character</button>
+
+    <div id="status" class="status"></div>
+  </main>
+
+  <script src="index.js"></script>
+</body>
 </html>

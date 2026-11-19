@@ -12,7 +12,8 @@
     //getting token
     const token = localStorage.getItem("token_id");
     if(token){
-        document.getElementById("auth-status").textContent = "Logged in! You can upload images now.";
+        document.getElementById("login-btn").classList.add("hidden");
+        document.getElementById("logout-btn").classList.remove("hidden");
     }
 
 
@@ -23,37 +24,49 @@
         location.reload();
     }
 
+    //select image button
+    const fileInput = document.getElementById("file");
+    const selectBtn = document.getElementById("select-btn");
+    selectBtn.onclick = () => fileInput.click();
+    fileInput.onchange = () => {
+        selectBtn.textContent = fileInput.files[0] ? fileInput.files[0].name : "Select Image";
+    }
+
 
     document.getElementById("btn-upload").onclick = async() => {
-        const file = document.getElementById("file").files[0];
+        const file = fileInput.files[0];
         const status = document.getElementById("status");
         if(!token){
+            status.className = "status error";
             status.textContent = "Please Login first";
             return;
         }
         if(!file) {
+            status.className = "status error";
             status.textContent = "Pick a file first";
             return;
         }
 
         const headers = {Authorization: "Bearer " + token};
 
-        status.textContent = "Uploading..."
+        status.className = "status";
+        status.innerHTML = `<div class="spinner"></div> Uploading...`;
         const res = await fetch(API, {method:"POST", headers});
         if (!res.ok){
+            status.className = "status error";
             status.textContent = "Upload failed";
             return;
         }
         const {image_id, upload_url} = await res.json();
 
-        status.textContent = "Uploading to S3..."
+        status.innerHTML = `<div class="spinner"></div> Uploading to S3...`;
         const put = await fetch(upload_url, {
             method: "PUT",
             body: file
         })
 
         if(put.ok){
-            status.textContent = `Uploaded! Waiting for Ai worker...` 
+            status.innerHTML = `<div class="spinner"></div> Uploaded! Waiting for Ai worker...`;
 
           for (let i=0; i<10;i++){
             await new Promise((resolve) => setTimeout(resolve, 2000));
@@ -62,16 +75,17 @@
             const data = await res.json();
 
             if(data.status == "Done"){
-                status.textContent = `
-                Your character is ${data.character_name}
-                `
+                status.className = "status result";
+                status.textContent = `Your character is ${data.character_name}`;
                 return;
             }
-            status.textContent = "Looking for a character..." 
+            status.innerHTML = `<div class="spinner"></div> Looking for a character...`;
             }
+            status.className = "status error";
             status.textContent = "Character not found.";
 
         } else{
+            status.className = "status error";
             status.textContent = "Upload failed";
         }
     }

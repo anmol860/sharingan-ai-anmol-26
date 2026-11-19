@@ -97,3 +97,6 @@ resource "aws_iam_role_policy" "ai_worker_policy" {
     ]
   })
 }
+
+
+

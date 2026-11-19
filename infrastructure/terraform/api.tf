@@ -33,22 +33,22 @@ resource "aws_apigatewayv2_api" "http_api" {
   cors_configuration {
     allow_origins = ["*"]
     allow_methods = ["POST", "GET", "OPTIONS"]
-    allow_headers = ["content-type"]
+    allow_headers = ["content-type", "authorization"]
   }
 }
 
 
-resource "aws_apigatewayv2_integration" "api_handler_integration"{
-  api_id = aws_apigatewayv2_api.http_api.id
-  integration_type = "AWS_PROXY"
-  integration_uri = aws_lambda_function.api_handler.invoke_arn
+resource "aws_apigatewayv2_integration" "api_handler_integration" {
+  api_id                 = aws_apigatewayv2_api.http_api.id
+  integration_type       = "AWS_PROXY"
+  integration_uri        = aws_lambda_function.api_handler.invoke_arn
   payload_format_version = "2.0"
 }
 
-resource "aws_apigatewayv2_route" "get_upload_status"{
-  api_id = aws_apigatewayv2_api.http_api.id
+resource "aws_apigatewayv2_route" "get_upload_status" {
+  api_id    = aws_apigatewayv2_api.http_api.id
   route_key = "GET /uploads/{image_id}"
-  target = "integrations/${aws_apigatewayv2_integration.api_handler_integration.id}"
+  target    = "integrations/${aws_apigatewayv2_integration.api_handler_integration.id}"
 }
 
 

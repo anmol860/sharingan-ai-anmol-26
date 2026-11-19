@@ -4,12 +4,14 @@ __pycache__/
 *.py[cod]
 .venv/
 venv/
+build/
 
 # ML datasets & raw checkpoints (keep .gitkeep)
 ml/dataset/*
 !ml/dataset/.gitkeep
 ml/models/*.pt
 ml/models/*.pth
+
 
 # Terraform state & local secrets
 **/.terraform/

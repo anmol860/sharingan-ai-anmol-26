@@ -1,16 +1,27 @@
 data "archive_file" "ai_worker_zip" {
   type        = "zip"
-  source_dir  = "${path.module}/../../backend/ai-worker"
+  source_dir  = "${path.module}/../../build/ai-worker"
   output_path = "${path.module}/.terraform/tmp/ai-worker.zip"
+  excludes    = ["__pycache__"]
 }
+
+resource "aws_s3_object" "ai_worker_package" {
+  bucket = aws_s3_bucket.image_storage.id
+  key    = "deployments/ai-worker.zip"
+  source = data.archive_file.ai_worker_zip.output_path
+  etag   = data.archive_file.ai_worker_zip.output_md5
+}
+
 
 resource "aws_lambda_function" "ai_worker" {
   function_name    = "${var.prj_name}-ai-worker"
   role             = aws_iam_role.ai_worker_role.arn
   runtime          = "python3.12"
   handler          = "worker.lambda_handler"
-  filename         = data.archive_file.ai_worker_zip.output_path
+  s3_bucket        = aws_s3_object.ai_worker_package.bucket
+  s3_key           = aws_s3_object.ai_worker_package.key
   source_code_hash = data.archive_file.ai_worker_zip.output_base64sha256
+  memory_size      = 512
   timeout          = 30
   architectures    = ["arm64"]
 
